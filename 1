@@ -1,0 +1,105 @@
+import json
+
+data = []
+
+def welcome():
+    print("🧠 Classroom Quiz Manager 🧠")
+
+def menu():
+    print("""
+1. Yeni tələbə əlavə et
+2. Bütün tələbələri göstər
+3. Axtar (ID ilə)
+4. Yenilə
+5. Sil
+6. Statistika (Orta bal)
+7. Fayla yaz
+8. Fayldan oxu
+9. Kömək
+0. Çıx
+""")
+
+def add_student():
+    try:
+        id = input("ID: ")
+        name = input("Ad: ")
+        grade = float(input("Bal: "))
+        data.append({"id": id, "name": name, "grade": grade})
+    except:
+        print("⚠️ Səhv məlumat daxil etdiniz!")
+
+def view_all():
+    for d in data:
+        print(f"{d['id']} | {d['name']} | {d['grade']}")
+
+def search():
+    key = input("Axtarılacaq ID: ")
+    for d in data:
+        if d['id'] == key:
+            print(d)
+            return
+    print("Tapılmadı.")
+
+def update():
+    key = input("Yenilənəcək ID: ")
+    for d in data:
+        if d['id'] == key:
+            d['name'] = input("Yeni ad: ")
+            d['grade'] = float(input("Yeni bal: "))
+            return
+    print("Tapılmadı.")
+
+def delete():
+    key = input("Silinəcək ID: ")
+    for d in data:
+        if d['id'] == key:
+            data.remove(d)
+            print("Silindi.")
+            return
+    print("Tapılmadı.")
+
+def stats():
+    if not data:
+        print("Heç nə yoxdur.")
+        return
+    avg = sum(d['grade'] for d in data) / len(data)
+    print(f"Orta bal: {avg:.2f}")
+
+def save():
+    with open("data.json", "w") as f:
+        json.dump(data, f)
+    print("Yadda saxlanıldı.")
+
+def load():
+    global data
+    try:
+        with open("data.json", "r") as f:
+            data = json.load(f)
+        print("Yükləndi.")
+    except:
+        print("Fayl tapılmadı.")
+
+def help_info():
+    print("Bu proqram tələbələri idarə etmək üçündür. Sadəcə menyudan nömrə seç və davam et.")
+
+def main():
+    welcome()
+    while True:
+        menu()
+        choice = input("Seçim: ")
+        if choice == "1": add_student()
+        elif choice == "2": view_all()
+        elif choice == "3": search()
+        elif choice == "4": update()
+        elif choice == "5": delete()
+        elif choice == "6": stats()
+        elif choice == "7": save()
+        elif choice == "8": load()
+        elif choice == "9": help_info()
+        elif choice == "0":
+            print("Çıxılır...")
+            break
+        else:
+            print("Yanlış seçim.")
+
+main()
